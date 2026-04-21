@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --background: 210 40% 99%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 217 91% 60%;
+    --primary-deep: 224 76% 40%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 158 64% 42%;
+    --accent-foreground: 0 0% 100%;
+    --highlight: 32 95% 56%;
+    --highlight-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 16% 90%;
+    --input: 220 16% 90%;
+    --ring: 221 83% 53%;
+    --footer: 222 47% 9%;
+    --footer-foreground: 215 20% 75%;
+    --footer-heading: 0 0% 100%;
+    --footer-muted: 215 16% 50%;
+    --radius: 0.875rem;
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(217 91% 60%) 50%, hsl(199 89% 56%) 100%);
+    --gradient-emerald: linear-gradient(135deg, hsl(158 64% 42%) 0%, hsl(173 80% 40%) 100%);
+    --gradient-sunset: linear-gradient(135deg, hsl(32 95% 56%) 0%, hsl(346 84% 61%) 100%);
+    --shadow-elegant: 0 25px 50px -15px hsl(221 83% 53% / 0.35);
+    --shadow-card: 0 8px 30px -12px hsl(222 47% 11% / 0.12);
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-md border border-white/60;
+    box-shadow: var(--shadow-card);
+  }
+  .text-gradient-hero {
+    background-image: var(--gradient-hero);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-gradient-hero { background-image: var(--gradient-hero); }
+  .bg-gradient-emerald { background-image: var(--gradient-emerald); }
+  .bg-gradient-sunset { background-image: var(--gradient-sunset); }
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
