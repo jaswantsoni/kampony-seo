@@ -17,18 +17,8 @@ export interface SeoPage {
 
 export const SEO_PAGES: SeoPage[] = [
   // ── Tools (highest priority) ──────────────────────────────────────────────
-  {
-    slug: "free-gst-calculator",
-    title: "Free GST Calculator India — CGST, SGST & IGST",
-    description: "Calculate GST instantly. Enter amount and rate to get CGST, SGST or IGST breakdown. Free online tool for Indian businesses.",
-    intent: "tool",
-  },
-  {
-    slug: "gst-invoice-generator-free",
-    title: "Free GST Invoice Generator — Create Invoice Online",
-    description: "Generate GST-compliant invoices online for free. Download PDF instantly. No signup required for first invoice.",
-    intent: "tool",
-  },
+  // NOTE: free-gst-calculator and gst-invoice-generator-free have dedicated
+  // app/ directories — keep them out of [slug] to avoid routing conflicts.
   {
     slug: "hsn-code-finder-india",
     title: "HSN Code Finder India — Search HSN/SAC Codes & GST Rates",
