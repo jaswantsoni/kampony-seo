@@ -12,6 +12,7 @@ const RESERVED = new Set([
   "login", "signin", "signup", "terms", "privacy",
   "resources", "api", "sitemap.xml", "robots.txt",
   "sitemap-pages.xml", "sitemap-dynamic.xml",
+  "free-gst-calculator", "gst-invoice-generator-free",
 ]);
 
 interface Props { params: { slug: string } }
