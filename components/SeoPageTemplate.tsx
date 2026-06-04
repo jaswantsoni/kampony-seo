@@ -126,6 +126,25 @@ export default function SeoPageTemplate({ page, content }: Props) {
             </div>
           </section>
 
+          {/* Rich article content (page-specific long-form guide) */}
+          {content.richContent && (
+            <section className="py-12 md:py-16 max-w-4xl mx-auto px-4">
+              <div
+                className="prose prose-lg prose-indigo max-w-none
+                  prose-headings:font-bold prose-headings:text-gray-900
+                  prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4
+                  prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+                  prose-p:text-gray-700 prose-p:leading-relaxed
+                  prose-ul:text-gray-700 prose-li:my-1
+                  prose-table:text-sm prose-table:w-full
+                  prose-th:bg-indigo-50 prose-th:text-indigo-800 prose-th:font-semibold prose-th:p-3 prose-th:border prose-th:border-indigo-100
+                  prose-td:p-3 prose-td:border prose-td:border-gray-200
+                  prose-strong:text-gray-900"
+                dangerouslySetInnerHTML={{ __html: content.richContent }}
+              />
+            </section>
+          )}
+
           {/* Features */}
           <section className="py-16 md:py-20 max-w-6xl mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold text-center mb-12">
