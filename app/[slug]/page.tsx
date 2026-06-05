@@ -18,6 +18,7 @@ const RESERVED = new Set([
 interface Props { params: { slug: string } }
 
 export async function generateStaticParams() {
+  console.log(SEO_KEYWORDS)
   return SEO_KEYWORDS.map((slug) => ({ slug }));
 }
 
