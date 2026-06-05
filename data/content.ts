@@ -1,4 +1,5 @@
 import type { SeoPage } from "./keywords";
+import { SHARED_FEATURES, SHARED_FAQS } from "@/lib/pageData";
 
 export interface FAQ { q: string; a: string; }
 export interface PageContent {
@@ -80,15 +81,7 @@ function informationalContent(page: SeoPage): Partial<PageContent> {
 }
 
 // ── Common features (shared across all intents) ──────────────────────────────
-
-const COMMON_FEATURES = [
-  { title: "GST-Compliant Invoices", desc: "Tax invoices, bill of supply, proforma and delivery challans with auto CGST/SGST/IGST." },
-  { title: "HSN/SAC Code Support", desc: "Search and apply correct HSN/SAC codes with auto GST rate lookup." },
-  { title: "E-Way Bill & IRN", desc: "Generate e-way bills and IRN with QR codes directly from your invoice." },
-  { title: "Inventory Management", desc: "Track stock levels, get low-stock alerts and manage purchases." },
-  { title: "Reports & Ledgers", desc: "Sales, purchase, profit, GST and customer ledgers — exportable to Excel." },
-  { title: "Telegram Bot", desc: "Create invoices and check payments right from Telegram." },
-];
+// Imported from @/lib/pageData — single source of truth shared with tool pages.
 
 // ── Common FAQs ──────────────────────────────────────────────────────────────
 
@@ -101,26 +94,7 @@ function buildFaqs(page: SeoPage): FAQ[] {
       It involves creating and managing GST-compliant documents with correct tax calculations (CGST, SGST or IGST) 
       based on whether the transaction is intra-state or inter-state.`,
     },
-    {
-      q: "Is Kampony free to use?",
-      a: "Yes. Kampony offers a free plan with 10 invoices, unlimited products and customers. Paid plans start at ₹149/month for unlimited invoices.",
-    },
-    {
-      q: "Does Kampony support e-way bills and IRN?",
-      a: "Yes. Premium plan users can generate e-way bills, IRN and QR codes directly from invoices in one click.",
-    },
-    {
-      q: "Can I use Kampony on mobile?",
-      a: "Yes. Kampony works on any mobile browser. You can also create invoices via the Telegram bot without opening a browser.",
-    },
-    {
-      q: "How is Kampony different from Tally or Vyapar?",
-      a: "Kampony is 100% cloud-based — no installation, no USB dongles, automatic updates. Plans start at ₹149/month vs ₹18,000+ for Tally. Access from any device, anywhere.",
-    },
-    {
-      q: "Is my business data secure?",
-      a: "All data is encrypted and stored on secure cloud servers with HTTPS. We never share your data with third parties.",
-    },
+    ...SHARED_FAQS,
   ];
 }
 
@@ -142,7 +116,7 @@ export function getPageContent(page: SeoPage, allPages: SeoPage[]): PageContent 
   return {
     h1: page.title,
     intro: intentContent.intro ?? "",
-    features: COMMON_FEATURES,
+    features: [...SHARED_FEATURES],
     steps: intentContent.steps ?? [],
     faqs: buildFaqs(page),
     relatedPages,

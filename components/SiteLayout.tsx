@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import { Menu, X } from "lucide-react";
 
 const AUTH_URL = "https://business.kampony.com/auth";
 
@@ -11,6 +15,8 @@ const nav = [
 ];
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <header className="sticky top-0 z-50 backdrop-blur-md bg-background/80 border-b border-border">
@@ -18,6 +24,8 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           <Link href="/" className="flex items-center gap-2 font-bold text-xl">
             <img src="/headerLogo.png" alt="Kampony" className="h-9" />
           </Link>
+
+          {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
             {nav.map((n) => (
               <Link key={n.href} href={n.href} className="hover:text-foreground transition-colors">
@@ -25,15 +33,53 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               </Link>
             ))}
           </div>
+
           <div className="flex items-center gap-2">
-            <Link href="/login" className="text-sm px-3 py-1.5 rounded-md hover:bg-secondary transition-colors">
+            <Link href="/login" className="hidden sm:block text-sm px-3 py-1.5 rounded-md hover:bg-secondary transition-colors">
               Login
             </Link>
-            <a href={AUTH_URL} className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity shadow-md font-medium">
+            <a
+              href={AUTH_URL}
+              className="text-sm bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity shadow-md font-medium"
+            >
               Start Today
             </a>
+            {/* Hamburger — mobile only */}
+            <button
+              onClick={() => setMobileOpen((o) => !o)}
+              className="md:hidden inline-flex items-center justify-center h-9 w-9 rounded-md hover:bg-secondary transition-colors"
+              aria-label={mobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </nav>
+
+        {/* Mobile dropdown */}
+        {mobileOpen && (
+          <div className="md:hidden border-t border-border bg-background/95 backdrop-blur-md">
+            <nav className="container py-4 flex flex-col gap-1" aria-label="Mobile">
+              {nav.map((n) => (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground px-2 py-2.5 rounded-md hover:bg-secondary transition-colors"
+                >
+                  {n.label}
+                </Link>
+              ))}
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground px-2 py-2.5 rounded-md hover:bg-secondary transition-colors sm:hidden"
+              >
+                Login
+              </Link>
+            </nav>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">{children}</main>
@@ -45,7 +91,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               <img src="/footerLogo.png" alt="Kampony" className="h-12 opacity-80" />
             </div>
             <p className="text-sm text-footer-muted leading-relaxed">
-              Cloud-based GST billing & business management built for Indian MSMEs.
+              Cloud-based GST billing &amp; business management built for Indian MSMEs.
             </p>
           </div>
           <div>
@@ -68,7 +114,10 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
           </div>
           <div>
             <h4 className="font-semibold text-footer-heading mb-3 text-sm">Get started</h4>
-            <a href={AUTH_URL} className="block w-full text-center text-sm bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity font-medium">
+            <a
+              href={AUTH_URL}
+              className="block w-full text-center text-sm bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity font-medium"
+            >
               Start Free Today
             </a>
             <p className="mt-3 text-xs text-footer-muted">Made in India 🇮🇳</p>

@@ -29,18 +29,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: PRIORITY[p.intent] ?? 0.7,
   }));
 
-  // Resources index
-  const resourcesEntry: MetadataRoute.Sitemap = [{
-    url: `${SITE_URL}/resources`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }, {
-    url: `${SITE_URL}/free-gst-calculator`,
-    lastModified: now,
-    changeFrequency: "monthly",
-    priority: 1.0,
-  }];
+  // Dedicated tool pages + resources index
+  const toolPageEntries: MetadataRoute.Sitemap = [
+    {
+      url: `${SITE_URL}/resources`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: `${SITE_URL}/free-gst-calculator`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 1.0,
+    },
+    {
+      url: `${SITE_URL}/gst-invoice-generator-free`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 1.0,
+    },
+  ];
 
-  return [...staticEntries, ...resourcesEntry, ...dynamicEntries];
+  return [...staticEntries, ...toolPageEntries, ...dynamicEntries];
 }

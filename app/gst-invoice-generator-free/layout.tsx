@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Free GST Invoice Generator — Create GST Invoice Online | Kampony",
@@ -8,5 +9,11 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return children;
+  return (
+    <>
+      {/* Load Google Identity Services in <head> so window.google is ready before download is attempted */}
+      <Script src="https://accounts.google.com/gsi/client" strategy="beforeInteractive" />
+      {children}
+    </>
+  );
 }

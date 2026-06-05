@@ -1,17 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Metadata } from "next";
 import Link from "next/link";
 import SiteLayout from "@/components/SiteLayout";
+import { SHARED_FEATURES, SHARED_FAQS, buildFaqSchema, inr } from "@/lib/pageData";
 import {
-  ArrowRight, Calculator, CheckCircle2, FileText,
-  Package, Receipt, Send, ShieldCheck, Sparkles,
+  ArrowRight, Calculator, CheckCircle2, ShieldCheck, Sparkles,
 } from "lucide-react";
-
-// Note: metadata must be in a separate server component when using "use client".
-// Export it from a layout or use generateMetadata in a wrapper.
-// For simplicity, meta tags are handled via the root layout's metadataBase.
 
 const AUTH_URL = "https://business.kampony.com/auth";
 const GST_RATES = [0, 0.25, 3, 5, 12, 18, 28];
@@ -19,14 +14,15 @@ const GST_RATES = [0, 0.25, 3, 5, 12, 18, 28];
 type AmountType = "exclusive" | "inclusive";
 type Region = "intra" | "inter";
 
-const features = [
-  { icon: FileText, title: "GST-Compliant Invoices", desc: "Tax invoices, bill of supply, proforma and delivery challans with auto CGST/SGST/IGST." },
-  { icon: Package, title: "HSN/SAC Code Support", desc: "Search and apply correct HSN/SAC codes with auto GST rate lookup." },
-  { icon: Receipt, title: "E-Way Bill & IRN", desc: "Generate e-way bills and IRN with QR codes directly from your invoice." },
-  { icon: Package, title: "Inventory Management", desc: "Track stock levels, get low-stock alerts and manage purchases." },
-  { icon: FileText, title: "Reports & Ledgers", desc: "Sales, purchase, profit, GST and customer ledgers — exportable to Excel." },
-  { icon: Send, title: "Telegram Bot", desc: "Create invoices and check payments right from Telegram." },
+const CALCULATOR_FAQS = [
+  {
+    q: "What is the Free GST Calculator?",
+    a: "It's a free online tool by Kampony to instantly calculate CGST, SGST or IGST on any amount based on Indian GST rules — for both intra-state and inter-state transactions.",
+  },
+  ...SHARED_FAQS,
 ];
+
+const faqSchema = buildFaqSchema(CALCULATOR_FAQS);
 
 const steps = [
   { n: "01", title: "Enter your details", desc: "Input the amount, GST rate and transaction type (intra-state or inter-state)." },
@@ -34,30 +30,6 @@ const steps = [
   { n: "03", title: "Use in your invoice", desc: "Apply the calculated tax directly in Kampony to generate a GST-compliant invoice." },
   { n: "04", title: "Download & share", desc: "Download the invoice as PDF or share via WhatsApp and email in one click." },
 ];
-
-const faqs = [
-  { q: "What is the Free GST Calculator?", a: "It's a free online tool by Kampony to instantly calculate CGST, SGST or IGST on any amount based on Indian GST rules — for both intra-state and inter-state transactions." },
-  { q: "Is Kampony free to use?", a: "Yes. Kampony offers a free plan with 10 invoices, unlimited products and customers. Paid plans start at ₹149/month for unlimited invoices." },
-  { q: "Does Kampony support e-way bills and IRN?", a: "Yes. Premium plan users can generate e-way bills, IRN and QR codes directly from invoices in one click." },
-  { q: "Can I use Kampony on mobile?", a: "Yes. Kampony works on any mobile browser. You can also create invoices via the Telegram bot without opening a browser." },
-  { q: "How is Kampony different from Tally or Vyapar?", a: "Kampony is 100% cloud-based — no installation, no USB dongles, automatic updates. Plans start at ₹149/month vs ₹18,000+ for Tally. Access from any device, anywhere." },
-  { q: "Is my business data secure?", a: "All data is encrypted and stored on secure cloud servers with HTTPS. We never share your data with third parties." },
-];
-
-const inr = (n: number) =>
-  new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(
-    Number.isFinite(n) ? n : 0,
-  );
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((f) => ({
-    "@type": "Question",
-    name: f.q,
-    acceptedAnswer: { "@type": "Answer", text: f.a },
-  })),
-};
 
 export default function FreeGstCalculatorPage() {
   const [amount, setAmount] = useState<string>("10000");
@@ -68,11 +40,23 @@ export default function FreeGstCalculatorPage() {
   const result = useMemo(() => {
     const amt = parseFloat(amount) || 0;
     let net = amt, tax = 0;
-    if (type === "exclusive") { tax = (amt * rate) / 100; net = amt; }
-    else { net = amt / (1 + rate / 100); tax = amt - net; }
+    if (type === "exclusive") {
+      tax = (amt * rate) / 100;
+      net = amt;
+    } else {
+      net = amt / (1 + rate / 100);
+      tax = amt - net;
+    }
     const total = net + tax;
     const half = tax / 2;
-    return { net, tax, total, cgst: region === "intra" ? half : 0, sgst: region === "intra" ? half : 0, igst: region === "inter" ? tax : 0 };
+    return {
+      net,
+      tax,
+      total,
+      cgst: region === "intra" ? half : 0,
+      sgst: region === "intra" ? half : 0,
+      igst: region === "inter" ? tax : 0,
+    };
   }, [amount, rate, type, region]);
 
   return (
@@ -87,16 +71,22 @@ export default function FreeGstCalculatorPage() {
           </div>
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
             Free GST Calculator India —{" "}
-            <span className="text-gradient-hero">CGST, SGST & IGST</span>
+            <span className="text-gradient-hero">CGST, SGST &amp; IGST</span>
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
             Use Kampony's free online tool to get instant GST results. No signup required. Built specifically for Indian GST rules.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href={AUTH_URL} className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold hover:opacity-90 shadow-md">
+            <a
+              href={AUTH_URL}
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold hover:opacity-90 shadow-md"
+            >
               Start Free — No Credit Card <ArrowRight className="h-4 w-4" />
             </a>
-            <Link href="/#pricing" className="inline-flex items-center border border-border px-6 py-3 rounded-xl font-semibold hover:bg-secondary">
+            <Link
+              href="/#pricing"
+              className="inline-flex items-center border border-border px-6 py-3 rounded-xl font-semibold hover:bg-secondary"
+            >
               View Pricing
             </Link>
           </div>
@@ -130,8 +120,9 @@ export default function FreeGstCalculatorPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm font-medium">GST rate</label>
+                <label htmlFor="rate" className="text-sm font-medium">GST rate</label>
                 <select
+                  id="rate"
                   value={rate}
                   onChange={(e) => setRate(parseFloat(e.target.value))}
                   className="mt-1.5 w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
@@ -140,8 +131,9 @@ export default function FreeGstCalculatorPage() {
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium">Amount type</label>
+                <label htmlFor="amtType" className="text-sm font-medium">Amount type</label>
                 <select
+                  id="amtType"
                   value={type}
                   onChange={(e) => setType(e.target.value as AmountType)}
                   className="mt-1.5 w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
@@ -152,30 +144,49 @@ export default function FreeGstCalculatorPage() {
               </div>
             </div>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Transaction type</label>
+            <fieldset>
+              <legend className="text-sm font-medium mb-2">Transaction type</legend>
               <div className="grid grid-cols-2 gap-3">
                 {(["intra", "inter"] as Region[]).map((r) => (
                   <label
                     key={r}
                     className={`flex items-center gap-2 rounded-lg border p-3 cursor-pointer text-sm ${region === r ? "border-primary bg-primary/5" : "border-border"}`}
                   >
-                    <input type="radio" name="region" value={r} checked={region === r} onChange={() => setRegion(r)} className="accent-primary" />
+                    <input
+                      type="radio"
+                      name="region"
+                      value={r}
+                      checked={region === r}
+                      onChange={() => setRegion(r)}
+                      className="accent-primary"
+                    />
                     {r === "intra" ? "Intra-state (CGST + SGST)" : "Inter-state (IGST)"}
                   </label>
                 ))}
               </div>
-            </div>
+            </fieldset>
 
-            <div className="rounded-xl bg-secondary/60 p-5 space-y-2.5 text-sm">
-              <div className="flex justify-between"><span className="text-muted-foreground">Net amount</span><span className="font-medium">{inr(result.net)}</span></div>
+            <div className="rounded-xl bg-secondary/60 p-5 space-y-2.5 text-sm" aria-live="polite" aria-label="GST calculation result">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Net amount</span>
+                <span className="font-medium">{inr(result.net)}</span>
+              </div>
               {region === "intra" ? (
                 <>
-                  <div className="flex justify-between"><span className="text-muted-foreground">CGST ({rate / 2}%)</span><span className="font-medium">{inr(result.cgst)}</span></div>
-                  <div className="flex justify-between"><span className="text-muted-foreground">SGST ({rate / 2}%)</span><span className="font-medium">{inr(result.sgst)}</span></div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">CGST ({rate / 2}%)</span>
+                    <span className="font-medium">{inr(result.cgst)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">SGST ({rate / 2}%)</span>
+                    <span className="font-medium">{inr(result.sgst)}</span>
+                  </div>
                 </>
               ) : (
-                <div className="flex justify-between"><span className="text-muted-foreground">IGST ({rate}%)</span><span className="font-medium">{inr(result.igst)}</span></div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">IGST ({rate}%)</span>
+                  <span className="font-medium">{inr(result.igst)}</span>
+                </div>
               )}
               <div className="flex justify-between border-t border-border pt-2.5 text-base">
                 <span className="font-semibold">Total</span>
@@ -193,7 +204,7 @@ export default function FreeGstCalculatorPage() {
           <p className="mt-3 text-muted-foreground">From calculation to compliant invoicing — Kampony handles it end to end.</p>
         </header>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((f) => (
+          {SHARED_FEATURES.map((f) => (
             <div key={f.title} className="border border-border/60 rounded-2xl p-6">
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
@@ -230,12 +241,25 @@ export default function FreeGstCalculatorPage() {
       <section className="container py-16 md:py-24 max-w-3xl">
         <h2 className="text-3xl font-bold tracking-tight">Understanding GST in India</h2>
         <div className="mt-6 space-y-5 text-muted-foreground leading-relaxed">
-          <p>Goods and Services Tax (GST) is a unified indirect tax applied on the supply of goods and services across India. For intra-state transactions, GST is split equally between Central GST (CGST) and State GST (SGST). For inter-state transactions, a single Integrated GST (IGST) is charged at the full rate.</p>
+          <p>
+            Goods and Services Tax (GST) is a unified indirect tax applied on the supply of goods and services across India.
+            For intra-state transactions, GST is split equally between Central GST (CGST) and State GST (SGST).
+            For inter-state transactions, a single Integrated GST (IGST) is charged at the full rate.
+          </p>
           <h3 className="text-xl font-semibold text-foreground">How to calculate GST</h3>
-          <p><strong className="text-foreground">GST exclusive:</strong> If your amount does not include tax, GST = Amount × Rate ÷ 100. Total = Amount + GST.</p>
-          <p><strong className="text-foreground">GST inclusive:</strong> If your amount already includes tax, Net = Amount ÷ (1 + Rate ÷ 100). GST = Amount − Net.</p>
+          <p>
+            <strong className="text-foreground">GST exclusive:</strong> If your amount does not include tax,
+            GST = Amount × Rate ÷ 100. Total = Amount + GST.
+          </p>
+          <p>
+            <strong className="text-foreground">GST inclusive:</strong> If your amount already includes tax,
+            Net = Amount ÷ (1 + Rate ÷ 100). GST = Amount − Net.
+          </p>
           <h3 className="text-xl font-semibold text-foreground">Common GST rates</h3>
-          <p>0%, 0.25%, 3%, 5%, 12%, 18% and 28% are the standard slabs. Use Kampony's HSN/SAC search to find the correct rate for your products.</p>
+          <p>
+            0%, 0.25%, 3%, 5%, 12%, 18% and 28% are the standard slabs.
+            Use Kampony's HSN/SAC search to find the correct rate for your products.
+          </p>
         </div>
       </section>
 
@@ -243,11 +267,11 @@ export default function FreeGstCalculatorPage() {
       <section className="container py-16 md:py-24 max-w-3xl">
         <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-center">Frequently Asked Questions</h2>
         <div className="mt-10 space-y-4">
-          {faqs.map((f) => (
+          {CALCULATOR_FAQS.map((f) => (
             <details key={f.q} className="group rounded-xl border border-border bg-card p-5">
               <summary className="cursor-pointer font-semibold flex items-center justify-between list-none">
                 {f.q}
-                <span className="text-primary group-open:rotate-45 transition-transform text-xl">+</span>
+                <span className="text-primary group-open:rotate-45 transition-transform text-xl" aria-hidden>+</span>
               </summary>
               <p className="mt-3 text-muted-foreground text-sm">{f.a}</p>
             </details>
@@ -258,11 +282,14 @@ export default function FreeGstCalculatorPage() {
       {/* CTA */}
       <section className="container pb-20">
         <div className="rounded-3xl bg-gradient-hero p-10 md:p-14 text-center text-primary-foreground shadow-xl">
-          <ShieldCheck className="h-10 w-10 mx-auto mb-4 opacity-90" />
+          <ShieldCheck className="h-10 w-10 mx-auto mb-4 opacity-90" aria-hidden />
           <h2 className="text-3xl md:text-4xl font-bold">Bill smarter with Kampony</h2>
           <p className="mt-3 opacity-90">Join thousands of Indian businesses billing smarter with Kampony.</p>
           <div className="mt-6">
-            <a href={AUTH_URL} className="inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl font-bold hover:bg-white/90 shadow-xl">
+            <a
+              href={AUTH_URL}
+              className="inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl font-bold hover:bg-white/90 shadow-xl"
+            >
               Start Free Today <ArrowRight className="h-4 w-4" />
             </a>
           </div>
