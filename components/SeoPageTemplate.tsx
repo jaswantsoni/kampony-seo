@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { SeoPage } from "@/data/keywords";
 import type { PageContent } from "@/data/content";
+import Image from "next/image";
 
 const AUTH_URL = "https://business.kampony.com/auth";
 const SITE_URL = "https://www.kampony.com";
@@ -63,8 +64,15 @@ export default function SeoPageTemplate({ page, content }: Props) {
         <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
           <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2 font-bold text-lg text-indigo-600">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-sm">K</span>
-              Kampony
+              {/* <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white font-bold text-sm">K</span>
+              Kampony */}
+              <Image
+                src="/assets/header-logo.png"
+                alt="Kampony Logo"
+                width={180}
+                height={60}
+                priority
+              />            
             </Link>
             <div className="flex items-center gap-3">
               <a href={AUTH_URL} className="text-sm text-gray-600 hover:text-gray-900">Login</a>

@@ -19,8 +19,8 @@ const RICH_CONTENT: Record<string, string> = {
 
 | # | Slug | Title | Status |
 |---|---|---|---|
-| 1 | `credit-note-format-gst` | Credit Note Format Under GST — When & How to Issue | ⬜ todo |
-| 2 | `proforma-invoice-format-india` | Proforma Invoice Format India — Free Template & Guide | ⬜ todo |
+| 1 | `credit-note-format-gst` | Credit Note Format Under GST — When & How to Issue | ✅ done |
+| 2 | `proforma-invoice-format-india` | Proforma Invoice Format India — Free Template & Guide | ✅ done |
 | 3 | `delivery-challan-format` | Delivery Challan Format Under GST — Free Template | ⬜ todo |
 | 4 | `bill-of-supply-format` | Bill of Supply Format Under GST — Who Needs It? | ⬜ todo |
 | 5 | `e-way-bill-generation-online` | E-Way Bill Generation Online — Complete Guide 2025 | ⬜ todo |

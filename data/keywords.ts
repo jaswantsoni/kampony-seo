@@ -73,8 +73,8 @@ export const SEO_PAGES: SeoPage[] = [
   },
   {
     slug: "credit-note-format-gst",
-    title: "Credit Note Format Under GST — When & How to Issue",
-    description: "Learn when to issue a GST credit note, mandatory fields, and how to adjust your GST returns.",
+    title: "Credit Note Format Under GST: Rules, Sample & When to Issue",
+    description: "Learn what a GST credit note is, when to issue it, required fields, GST rules, sample format, and how Kampony simplifies credit note management for businesses.",
     intent: "informational",
   },
   {
