@@ -18,3 +18,4 @@ export function GET(_req: Request, { params }: { params: { slug: string } }) {
 
   return NextResponse.json({ slug: page.slug, page, content });
 }
+
